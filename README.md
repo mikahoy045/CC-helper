@@ -1,5 +1,10 @@
 # cc-usage
 
+[![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/mikahoy045/CC-helper/releases)
+[![license](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green)](LICENSE)
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)
+
 A Claude Code status line that shows, at a glance and in real time:
 
 - **Model & reasoning effort** — model name with a `⚡`-tagged effort indicator (`low`/`medium`/`high`/`xhigh`/`max`), color-scaled by intensity
