@@ -11,6 +11,8 @@ A Claude Code status line that shows, at a glance and in real time:
 
 Cross-platform: macOS, Windows, and Linux. Pure Node.js, zero dependencies.
 
+![cc-usage status line](docs/statusline.png)
+
 ```
 Opus ⚡high · ctx ██████░░░░ 63% 126k/200k
 5h █████░░░░░ 47% ↻1h 0m   7d ██████░░░░ 58% ↻2d 7h
@@ -56,9 +58,11 @@ Reset countdowns are computed from the `resets_at` Unix timestamp against the cu
 
 ### As a plugin (recommended)
 
-```bash
-claude plugin marketplace add /Users/mikah/Python/cc_helper
-claude plugin install cc-usage@cc-helper
+In Claude Code, add the marketplace and install the plugin:
+
+```
+/plugin marketplace add mikahoy045/CC-helper
+/plugin install cc-usage@cc-helper
 ```
 
 Then activate the status line (a plugin cannot register the main status line on its own — this writes it into your settings):
@@ -67,10 +71,11 @@ Then activate the status line (a plugin cannot register the main status line on 
 /cc-usage:setup
 ```
 
-### Manually (without the plugin system)
+### Manually (from a clone)
 
 ```bash
-node /Users/mikah/Python/cc_helper/scripts/install.mjs
+git clone https://github.com/mikahoy045/CC-helper.git
+node CC-helper/scripts/install.mjs
 ```
 
 Both paths copy the renderer to a stable location (`~/.claude/cc-usage/`) and add a `statusLine` entry to `~/.claude/settings.json` pointing at it. Your other settings are preserved, and an existing third-party status line is never overwritten without `--force`.
@@ -124,7 +129,7 @@ Useful for per-shell tweaks without editing the file: `NO_COLOR`, `CC_USAGE_NO_C
 /cc-usage:uninstall
 ```
 
-or `node /Users/mikah/Python/cc_helper/scripts/uninstall.mjs`. This removes the `statusLine` entry (restoring any previous one) and deletes the copied scripts. Your `config.json` is kept; pass `--keep-files` to also keep the scripts.
+or `node CC-helper/scripts/uninstall.mjs` from a clone. This removes the `statusLine` entry (restoring any previous one) and deletes the copied scripts. Your `config.json` is kept; pass `--keep-files` to also keep the scripts.
 
 ## Development
 
@@ -155,3 +160,7 @@ cc_helper/
 └── test/
     └── render.test.mjs
 ```
+
+## License
+
+[PolyForm Noncommercial License 1.0.0](LICENSE) — **free for everyone to use for any noncommercial purpose** (personal use, research, education, and noncommercial open-source projects). Commercial use is not permitted under this license; contact the author for a commercial arrangement. See [LICENSE](LICENSE) for the full terms.
