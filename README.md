@@ -1,6 +1,6 @@
 # cc-usage
 
-[![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/mikahoy045/CC-helper/releases)
+[![version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/mikahoy045/CC-helper/releases)
 [![license](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green)](LICENSE)
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)
