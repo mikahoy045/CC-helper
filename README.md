@@ -8,6 +8,7 @@
 A Claude Code status line that shows, at a glance and in real time:
 
 - **Model & reasoning effort** — model name with a `⚡`-tagged effort indicator (`low`/`medium`/`high`/`xhigh`/`max`), color-scaled by intensity
+- **Loaded skills** — the skills invoked this session (parsed from `Skill` tool calls), with a marquee when there are many
 - **Context window usage** — progress bar, percentage, and `used/size` tokens (auto-detects 1M context)
 - **5-hour usage** — percentage with a reset countdown
 - **Weekly (7-day) usage** — percentage with a reset countdown
@@ -19,7 +20,7 @@ Cross-platform: macOS, Windows, and Linux. Pure Node.js, zero dependencies.
 ![cc-usage status line](docs/statusline.png)
 
 ```
-Opus ⚡high · ctx ██████░░░░ 63% 126k/200k
+Opus ⚡high · ctx ██████░░░░ 63% 126k/200k · 🧩 web-search, context-engine
 5h █████░░░░░ 47% ↻1h 0m   7d ██████░░░░ 58% ↻2d 7h
 Σ spent sess 13203432 (13M) · fresh 1493210 (1.5M) · cache 11710222 (12M) · mo 782618983 (783M)
 
@@ -46,6 +47,7 @@ Claude Code pipes session JSON to the status line command on stdin. cc-usage rea
 | 5-hour usage + reset | `rate_limits.five_hour.used_percentage` / `.resets_at` |
 | Weekly usage + reset | `rate_limits.seven_day.used_percentage` / `.resets_at` |
 | Session / month token spend | aggregated from transcript JSONL under `~/.claude/projects/` |
+| Loaded skills | `Skill` tool invocations parsed from the session transcript |
 | Model | `model.display_name` |
 
 Reset countdowns are computed from the `resets_at` Unix timestamp against the current time on every refresh, so the countdown stays accurate even when the session is rate-limited and idle.
@@ -112,6 +114,9 @@ Edit `~/.claude/cc-usage/config.json` (created on install). All fields are optio
 | `showMonthTokens` | `true` | Show this month's token spend |
 | `tokenBreakdown` | `true` | Split the session into `fresh` (billed) and `cache` (cache reads) |
 | `exactTokens` | `true` | Show exact digits instead of `k`/`M`/`B` abbreviations |
+| `showSkills` | `true` | Show skills invoked this session |
+| `skillsWidth` | `32` | Max width (chars) for the skills segment before it marquees/truncates |
+| `skillsMarquee` | `true` | Scroll a long skills list; when `false`, truncate with `+N` instead |
 | `showCost` | `false` | Show estimated session cost |
 | `warnPercent` | `70` | Yellow threshold |
 | `critPercent` | `90` | Red threshold |
@@ -120,12 +125,12 @@ Edit `~/.claude/cc-usage/config.json` (created on install). All fields are optio
 
 ### Environment overrides
 
-Useful for per-shell tweaks without editing the file: `NO_COLOR`, `CC_USAGE_NO_COLOR`, `CC_USAGE_STYLE`, `CC_USAGE_BAR_WIDTH`, `CC_USAGE_SINGLE_LINE`, `CC_USAGE_SHOW_COST`, `CC_USAGE_SHOW_EFFORT`, `CC_USAGE_SHOW_SESSION_TOKENS`, `CC_USAGE_SHOW_MONTH_TOKENS`, `CC_USAGE_TOKEN_BREAKDOWN`, `CC_USAGE_EXACT_TOKENS`, `CC_USAGE_CONFIG` (alternate config path), `CC_USAGE_REFRESH` (refresh interval seconds, install-time).
+Useful for per-shell tweaks without editing the file: `NO_COLOR`, `CC_USAGE_NO_COLOR`, `CC_USAGE_STYLE`, `CC_USAGE_BAR_WIDTH`, `CC_USAGE_SINGLE_LINE`, `CC_USAGE_SHOW_COST`, `CC_USAGE_SHOW_EFFORT`, `CC_USAGE_SHOW_SESSION_TOKENS`, `CC_USAGE_SHOW_MONTH_TOKENS`, `CC_USAGE_TOKEN_BREAKDOWN`, `CC_USAGE_EXACT_TOKENS`, `CC_USAGE_SHOW_SKILLS`, `CC_USAGE_SKILLS_WIDTH`, `CC_USAGE_SKILLS_MARQUEE`, `CC_USAGE_CONFIG` (alternate config path), `CC_USAGE_REFRESH` (refresh interval seconds, install-time).
 
 ## Platform notes
 
 - **Windows**: Claude Code runs the command through Git Bash or PowerShell. The installer writes the script path with forward slashes and `node`, which both shells accept.
-- **Refresh**: installed with `refreshInterval: 10`, so countdowns tick while the session is idle or blocked. Change with `CC_USAGE_REFRESH=30 node scripts/install.mjs`.
+- **Refresh**: installed with `refreshInterval: 10`, so countdowns tick while the session is idle or blocked. Change with `CC_USAGE_REFRESH=30 node scripts/install.mjs`. The skills marquee also advances on each refresh, so a lower interval (e.g. `CC_USAGE_REFRESH=2`) makes it scroll more smoothly at the cost of running the script more often.
 - **Alternate config dir**: `CLAUDE_CONFIG_DIR` is respected throughout.
 
 ## Uninstall
@@ -152,8 +157,10 @@ cc_helper/
 │   └── marketplace.json     # single-plugin marketplace
 ├── statusline/
 │   ├── cc-usage.mjs         # entrypoint: reads stdin, prints the status line
-│   ├── render.mjs           # pure rendering (bars, colors, countdowns)
+│   ├── render.mjs           # pure rendering (bars, colors, countdowns, marquee)
 │   ├── tokens.mjs           # session/month token aggregation with caching
+│   ├── skills.mjs           # session skill invocations from the transcript
+│   ├── cache.mjs            # shared transcript-cache helpers
 │   └── config.mjs           # config resolution (defaults + file + env)
 ├── scripts/
 │   ├── install.mjs          # wire into settings.json (idempotent, atomic)

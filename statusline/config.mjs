@@ -16,6 +16,9 @@ const DEFAULTS = {
   showMonthTokens: true,
   tokenBreakdown: true,
   exactTokens: true,
+  showSkills: true,
+  skillsWidth: 32,
+  skillsMarquee: true,
   showCost: false,
   warnPercent: 70,
   critPercent: 90,
@@ -30,8 +33,8 @@ const STYLES = {
   ascii: { filled: '#', empty: '-' },
 };
 
-const BOOL_KEYS = ['color', 'multiLine', 'showModel', 'showEffort', 'showContext', 'showFiveHour', 'showSevenDay', 'showSessionTokens', 'showMonthTokens', 'tokenBreakdown', 'exactTokens', 'showCost'];
-const NUMBER_KEYS = ['barWidth', 'warnPercent', 'critPercent', 'limitPercent', 'compactColumns'];
+const BOOL_KEYS = ['color', 'multiLine', 'showModel', 'showEffort', 'showContext', 'showFiveHour', 'showSevenDay', 'showSessionTokens', 'showMonthTokens', 'tokenBreakdown', 'exactTokens', 'showSkills', 'skillsMarquee', 'showCost'];
+const NUMBER_KEYS = ['barWidth', 'warnPercent', 'critPercent', 'limitPercent', 'compactColumns', 'skillsWidth'];
 
 function configDir(env) {
   return env.CLAUDE_CONFIG_DIR || join(homedir(), '.claude');
@@ -82,6 +85,9 @@ function envOverrides(env) {
   if (env.CC_USAGE_SHOW_MONTH_TOKENS != null) overrides.showMonthTokens = readBool(env.CC_USAGE_SHOW_MONTH_TOKENS, true);
   if (env.CC_USAGE_TOKEN_BREAKDOWN != null) overrides.tokenBreakdown = readBool(env.CC_USAGE_TOKEN_BREAKDOWN, true);
   if (env.CC_USAGE_EXACT_TOKENS != null) overrides.exactTokens = readBool(env.CC_USAGE_EXACT_TOKENS, true);
+  if (env.CC_USAGE_SHOW_SKILLS != null) overrides.showSkills = readBool(env.CC_USAGE_SHOW_SKILLS, true);
+  if (env.CC_USAGE_SKILLS_WIDTH) overrides.skillsWidth = Number(env.CC_USAGE_SKILLS_WIDTH);
+  if (env.CC_USAGE_SKILLS_MARQUEE != null) overrides.skillsMarquee = readBool(env.CC_USAGE_SKILLS_MARQUEE, true);
   if (env.NO_COLOR) overrides.color = false;
   if (readBool(env.CC_USAGE_NO_COLOR, false)) overrides.color = false;
   return overrides;
@@ -102,6 +108,7 @@ export function resolveConfig(env = process.env) {
   merged.critPercent = clampInt(merged.critPercent, 0, 100, DEFAULTS.critPercent);
   merged.limitPercent = clampInt(merged.limitPercent, 0, 100, DEFAULTS.limitPercent);
   merged.compactColumns = clampInt(merged.compactColumns, 0, 500, DEFAULTS.compactColumns);
+  merged.skillsWidth = clampInt(merged.skillsWidth, 6, 200, DEFAULTS.skillsWidth);
   return merged;
 }
 

@@ -1,41 +1,11 @@
-import { readFileSync, writeFileSync, mkdirSync, renameSync, existsSync, statSync, readdirSync } from 'node:fs';
-import { homedir } from 'node:os';
+import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
+import { claudeDir, readCache, writeCache } from './cache.mjs';
 
 const MONTH_TTL_MS = 30000;
 
-function claudeDir(env) {
-  return env.CLAUDE_CONFIG_DIR || join(homedir(), '.claude');
-}
-
 function projectsDir(env) {
   return join(claudeDir(env), 'projects');
-}
-
-function cacheDir(env) {
-  return join(claudeDir(env), 'cc-usage', 'cache');
-}
-
-function readCache(env, name) {
-  try {
-    const path = join(cacheDir(env), name);
-    if (!existsSync(path)) return null;
-    return JSON.parse(readFileSync(path, 'utf8'));
-  } catch {
-    return null;
-  }
-}
-
-function writeCache(env, name, value) {
-  try {
-    mkdirSync(cacheDir(env), { recursive: true });
-    const path = join(cacheDir(env), name);
-    const tmp = `${path}.tmp`;
-    writeFileSync(tmp, JSON.stringify(value), 'utf8');
-    renameSync(tmp, path);
-  } catch {
-    /* best-effort cache */
-  }
 }
 
 function emptyComponents() {

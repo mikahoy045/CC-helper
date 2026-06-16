@@ -2,6 +2,7 @@
 import { resolveConfig } from './config.mjs';
 import { renderStatus } from './render.mjs';
 import { collectTokenUsage } from './tokens.mjs';
+import { sessionSkills } from './skills.mjs';
 
 function readStdin() {
   return new Promise((resolve) => {
@@ -43,7 +44,8 @@ async function main() {
       session: config.showSessionTokens,
       month: config.showMonthTokens,
     });
-    const output = renderStatus(data, config, now, columns, { tokens });
+    const skills = config.showSkills ? sessionSkills(process.env, data && data.transcript_path) : [];
+    const output = renderStatus(data, config, now, columns, { tokens, skills });
     process.stdout.write(`${output}\n`);
   } catch {
     const name = (data.model && data.model.display_name) || 'Claude';

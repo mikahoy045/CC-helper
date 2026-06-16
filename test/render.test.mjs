@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { fmtDuration, fmtTokens, bar, clampPct, renderStatus } from '../statusline/render.mjs';
 import { resolveConfig } from '../statusline/config.mjs';
 import { sumEntries, deriveTotals } from '../statusline/tokens.mjs';
+import { extractSkills } from '../statusline/skills.mjs';
 
 const plainConfig = resolveConfig({ CC_USAGE_NO_COLOR: '1' });
 const NOW = 1_700_000_000;
@@ -228,6 +229,49 @@ test('sumEntries ignores non-assistant and malformed lines', () => {
     message: { id: 'm', usage: { input_tokens: 42, output_tokens: 0 } },
   });
   assert.equal(deriveTotals(sumEntries([user, broken, assistant].join('\n'), null)).total, 42);
+});
+
+test('renderStatus shows invoked skills on the first line', () => {
+  const data = { model: { display_name: 'Opus' }, context_window: { used_percentage: 28, context_window_size: 200000, total_input_tokens: 56000 } };
+  const out = renderStatus(data, plainConfig, NOW, 200, { skills: ['web-search', 'context-engine'] });
+  const first = out.split('\n')[0];
+  assert.match(first, /🧩 web-search, context-engine/);
+});
+
+test('renderStatus omits the skills segment when none are loaded', () => {
+  const data = { model: { display_name: 'Opus' }, context_window: { used_percentage: 28, context_window_size: 200000 } };
+  const out = renderStatus(data, plainConfig, NOW, 200, { skills: [] });
+  assert.equal(out.includes('🧩'), false);
+});
+
+test('skills marquee keeps within the configured width and advances over time', () => {
+  const cfg = resolveConfig({ CC_USAGE_NO_COLOR: '1', CC_USAGE_SKILLS_WIDTH: '12' });
+  const many = ['alpha-skill', 'beta-skill', 'gamma-skill', 'delta-skill'];
+  const data = { model: { display_name: 'Opus' }, context_window: { used_percentage: 10, context_window_size: 200000 } };
+  const at0 = renderStatus(data, cfg, 0, 200, { skills: many }).split('\n')[0];
+  const at5 = renderStatus(data, cfg, 5, 200, { skills: many }).split('\n')[0];
+  const window0 = at0.split('🧩 ')[1];
+  const window5 = at5.split('🧩 ')[1];
+  assert.equal(window0.length, 12);
+  assert.notEqual(window0, window5);
+});
+
+test('skills truncate with a +N count when marquee is disabled', () => {
+  const cfg = resolveConfig({ CC_USAGE_NO_COLOR: '1', CC_USAGE_SKILLS_WIDTH: '20', CC_USAGE_SKILLS_MARQUEE: '0' });
+  const data = { model: { display_name: 'Opus' }, context_window: { used_percentage: 10, context_window_size: 200000 } };
+  const out = renderStatus(data, cfg, NOW, 200, { skills: ['alpha', 'beta', 'gamma', 'delta', 'epsilon'] });
+  assert.match(out, /\+\d/);
+});
+
+test('extractSkills collects unique Skill invocations, most recent first', () => {
+  const mk = (skill, id) => JSON.stringify({
+    type: 'assistant',
+    requestId: id,
+    message: { id: `m-${id}`, content: [{ type: 'tool_use', name: 'Skill', input: { skill } }] },
+  });
+  const noise = JSON.stringify({ type: 'assistant', message: { content: [{ type: 'tool_use', name: 'Bash', input: { command: 'ls' } }] } });
+  const text = [mk('context-engine', 'a'), noise, mk('web-search', 'b'), mk('context-engine', 'c')].join('\n');
+  assert.deepEqual(extractSkills(text), ['context-engine', 'web-search']);
 });
 
 test('compact mode drops bars on narrow terminals', () => {

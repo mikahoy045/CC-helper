@@ -90,6 +90,40 @@ function effortTag(data, enabled) {
   return paint(`⚡${level}`, codes, enabled);
 }
 
+function marquee(text, width, now) {
+  if (text.length <= width) return text;
+  const full = `${text}   •   `;
+  const offset = Math.floor(Number(now) || 0) % full.length;
+  return `${full}${full}`.slice(offset, offset + width);
+}
+
+function truncateSkills(skills, width) {
+  const shown = [];
+  let used = 0;
+  for (const skill of skills) {
+    const cost = (shown.length ? 2 : 0) + skill.length;
+    if (used + cost > width) break;
+    shown.push(skill);
+    used += cost;
+  }
+  const remaining = skills.length - shown.length;
+  let text = shown.join(', ');
+  if (remaining > 0) text += `${shown.length ? ' ' : ''}+${remaining}`;
+  return text;
+}
+
+function skillsSegment(skills, cfg, enabled, now, compact) {
+  if (!cfg.showSkills || !skills || !skills.length) return '';
+  const icon = paint('🧩', ANSI.gray, enabled);
+  if (compact) return `${icon} ${paint(String(skills.length), ANSI.cyan, enabled)}`;
+  const joined = skills.join(', ');
+  let text;
+  if (joined.length <= cfg.skillsWidth) text = joined;
+  else if (cfg.skillsMarquee) text = marquee(joined, cfg.skillsWidth, now);
+  else text = truncateSkills(skills, cfg.skillsWidth);
+  return `${icon} ${paint(text, ANSI.cyan, enabled)}`;
+}
+
 function modelSegment(data, cfg, enabled) {
   const name = (data.model && data.model.display_name) || 'Claude';
   const nameText = paint(name, [ANSI.bold, ANSI.cyan], enabled);
@@ -194,6 +228,8 @@ export function renderStatus(data, cfg, now, columns = 0, extra = {}) {
     const cost = costSegment(data, enabled);
     if (cost) head.push(cost);
   }
+  const skills = skillsSegment(extra.skills, cfg, enabled, now, compact);
+  if (skills) head.push(skills);
   const headLine = head.filter(Boolean).join(separator);
 
   const rateLimits = data.rate_limits || {};

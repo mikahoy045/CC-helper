@@ -50,6 +50,13 @@ const scenarios = [
   },
 ];
 
+const sampleSkills = [
+  ['web-search', 'context-engine'],
+  ['python-patterns'],
+  ['context-engine', 'web-search', 'golang-testing', 'pdf-processor', 'code-reviewer', 'tdd-guide'],
+  [],
+];
+
 const sampleTokens = [
   { session: deriveTotals({ input: 180000, output: 95000, cacheCreate: 220000, cacheRead: 745432 }), month: deriveTotals({ input: 4200000, output: 1800000, cacheCreate: 5200000, cacheRead: 33800000 }) },
   { session: deriveTotals({ input: 520000, output: 240000, cacheCreate: 610000, cacheRead: 5430000 }), month: deriveTotals({ input: 8100000, output: 3200000, cacheCreate: 9700000, cacheRead: 71000000 }) },
@@ -60,7 +67,7 @@ const sampleTokens = [
 for (const [index, scenario] of scenarios.entries()) {
   console.log(`\n  ${scenario.title}`);
   const columns = Number(process.env.COLUMNS) || 0;
-  const rendered = renderStatus(scenario.data, config, now, columns, { tokens: sampleTokens[index] });
+  const rendered = renderStatus(scenario.data, config, now, columns, { tokens: sampleTokens[index], skills: sampleSkills[index] });
   for (const line of rendered.split('\n')) {
     console.log(`    ${line}`);
   }
