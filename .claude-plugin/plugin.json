@@ -1,0 +1,15 @@
+{
+  "name": "cc-usage",
+  "version": "0.1.0",
+  "description": "Status line for Claude Code showing live context window usage, 5-hour and weekly rate-limit usage, and reset countdowns. Cross-platform (macOS, Windows, Linux).",
+  "author": {
+    "name": "mikah"
+  },
+  "keywords": [
+    "statusline",
+    "usage",
+    "rate-limit",
+    "context-window",
+    "monitoring"
+  ]
+}

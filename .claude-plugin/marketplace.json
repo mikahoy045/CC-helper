@@ -1,0 +1,14 @@
+{
+  "name": "cc-helper",
+  "description": "Status line tooling for Claude Code: context, usage, and rate-limit visibility.",
+  "owner": {
+    "name": "mikah"
+  },
+  "plugins": [
+    {
+      "name": "cc-usage",
+      "source": "./",
+      "description": "Status line showing context %, 5-hour and weekly usage, and rate-limit reset countdowns."
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+node_modules/
+*.log
+*.tmp
+*.cc-usage.tmp
+.DS_Store
