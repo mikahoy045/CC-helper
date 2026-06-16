@@ -163,4 +163,10 @@ cc_helper/
 
 ## License
 
-[PolyForm Noncommercial License 1.0.0](LICENSE) — **free for everyone to use for any noncommercial purpose** (personal use, research, education, and noncommercial open-source projects). Commercial use is not permitted under this license; contact the author for a commercial arrangement. See [LICENSE](LICENSE) for the full terms.
+MIT with the [Commons Clause](LICENSE) condition.
+
+- ✅ **Free to use by anyone, including in commercial projects and at companies.**
+- ✅ Free to modify, fork, and redistribute at no charge.
+- ❌ You may **not sell** the software or a fork of it, or charge for a product/service whose value derives mainly from this plugin's functionality.
+
+See [LICENSE](LICENSE) for the full terms.

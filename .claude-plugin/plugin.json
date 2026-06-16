@@ -7,7 +7,7 @@
   },
   "homepage": "https://github.com/mikahoy045/CC-helper",
   "repository": "https://github.com/mikahoy045/CC-helper",
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "license": "MIT AND LicenseRef-Commons-Clause",
   "keywords": [
     "statusline",
     "usage",
