@@ -7,6 +7,7 @@
   "plugins": [
     {
       "name": "cc-usage",
+      "displayName": "CC Usage Helper",
       "source": "./",
       "description": "Status line showing context %, 5-hour and weekly usage, and rate-limit reset countdowns."
     }

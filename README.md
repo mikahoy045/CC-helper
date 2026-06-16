@@ -1,4 +1,19 @@
-# cc-usage
+```text
+ ██████╗ ██████╗    ██╗   ██╗███████╗ █████╗  ██████╗ ███████╗
+██╔════╝██╔════╝    ██║   ██║██╔════╝██╔══██╗██╔════╝ ██╔════╝
+██║     ██║         ██║   ██║███████╗███████║██║  ███╗█████╗  
+██║     ██║         ██║   ██║╚════██║██╔══██║██║   ██║██╔══╝  
+╚██████╗╚██████╗    ╚██████╔╝███████║██║  ██║╚██████╔╝███████╗
+ ╚═════╝ ╚═════╝     ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+██╗  ██╗███████╗██╗     ██████╗ ███████╗██████╗ 
+██║  ██║██╔════╝██║     ██╔══██╗██╔════╝██╔══██╗
+███████║█████╗  ██║     ██████╔╝█████╗  ██████╔╝
+██╔══██║██╔══╝  ██║     ██╔═══╝ ██╔══╝  ██╔══██╗
+██║  ██║███████╗███████╗██║     ███████╗██║  ██║
+╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝
+```
+
+# CC Usage Helper
 
 [![version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/mikahoy045/CC-helper/releases)
 [![license](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-green)](LICENSE)
@@ -37,7 +52,7 @@ Opus ⚡max · ctx █████████░ 91% 910k/1M
 
 ## How it works
 
-Claude Code pipes session JSON to the status line command on stdin. cc-usage reads the official fields — no API calls, no token scraping, no transcript parsing:
+Claude Code pipes session JSON to the status line command on stdin. cc-usage reads those official fields for most segments (no API calls), and derives token spend and loaded skills from your local transcript files:
 
 | Display | Source field |
 | --- | --- |
